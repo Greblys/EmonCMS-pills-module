@@ -1,0 +1,7 @@
+tbody div {
+	display: none;
+}
+
+tbody th {
+	cursor: pointer;
+}
