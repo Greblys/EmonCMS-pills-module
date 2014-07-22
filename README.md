@@ -2,7 +2,6 @@ EmonCMS-pills-module
 ====================
 
 A module for EmonCMS which displays a form where you can set up a schedule for you pill reminder system.
-
 ##Requirements
 
 * EmonCMS
@@ -13,6 +12,8 @@ A module for EmonCMS which displays a form where you can set up a schedule for y
 * Create new folder called "pills"
 * Copy all the files from this repository into "pills" folder
 * That's it! You can check it by going to http://yourdomain.com/pills/configure
+
+[More information](https://github.com/emoncms/development/blob/master/Modules/myelectric_tutorial/readme.md) about modules in emonCMS.
 
 ##Possibe URL's for this module
 
