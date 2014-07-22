@@ -175,4 +175,43 @@ $(document).ready(function(){
 			});
 		}
 	});
+	
+	/**
+	 * Triggered when "Copy from one day to all days" button
+	 * is clicked. Getting values from last focused day and copy
+	 * those values into all other days.
+	 */
+	$("#copyFromOneDayToAllDays").click(function() {
+		if(lastFocus){
+			// At first let's collect data which we need to copy
+			var tr = lastFocus.parents("tr"); //day from where we copy all values
+			var originDay = []; // values stored for whole day
+			tr.find("td").each(function() {
+				var td = {}; //values stored for one cell
+				td.time = $(this).find('input[type="time"]').val();
+				td.importance = $(this).find('select').val();
+				td.names = [];
+				$(this).find(".pillNameButton").each(function() {
+					td.names.push($(this).text());
+				});
+				originDay.push(td);
+			});
+			console.log(originDay);
+			//Copy all data
+			$("td").each(function() {
+				var id = $(this).find('input[type="text"]').attr("id");
+				var index = id % 4; //cell index
+				$(this).find('input[type="time"]').val(originDay[index].time);
+				$(this).find("select").val(originDay[index].importance);
+				//names
+				$(this).find(".pillNameButton").parent().parent().remove();
+				$(this).find('input[type="hidden"]').remove();
+				for (var i = 0; i < originDay[index].names.length; i++){
+					var input = $(this).find('input[type="text"]');
+					input.val(originDay[index].names[i]);
+					pillNameEntered(input);
+				}
+			});
+		}
+	});
 });

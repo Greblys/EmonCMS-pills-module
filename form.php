@@ -26,6 +26,7 @@ $monday = time() - ((date("N") - 1) * $daySecs) - (date("G") * 3600) - (date("i"
 <?php endfor; ?>
 </select>
 <button id="copyFromOneToAll" type="button" class="btn">Copy last modified cell to all cells</button>
+<button id="copyFromOneDayToAllDays" type="button" class="btn">Copy last modified day to all days</button>
 <table class="table">
 <?php
 $daytimes = array("Morning", "Mid-day", "Tea Time", "Bedtime");
