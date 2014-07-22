@@ -97,10 +97,6 @@ $(document).ready(function(){
 	function isNewName(caller){
 		var result = true
 		$(caller).parents("td").find(".pillNameButton").each(function(index) {
-			console.log("ASDAS");
-			console.log($(this).text());
-			console.log($(caller).val());
-			console.log($(this).text() == $(caller).val());
 			if(($(this).text()) == ($(caller).val())) {
 				result = false;
 				return false; //this only breaks each(), but doesn't return value from isNewName()
