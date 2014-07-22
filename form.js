@@ -57,22 +57,21 @@ $(document).ready(function(){
 	 * @param {element} caller input text field element where the new pill name was entered
 	 */
 	function pillNameEntered(caller){
-		var name = $(caller).val();
-		$(caller).before('<input name="'+$(caller).attr("id")+'[pillNames][]" type="hidden" value="'+name+'">');
-		$(caller).before('\
-			<div>\
-				<div class="btn-group">\
-					<button type="button" class="btn btn-default pillNameButton">'+name+'</button>\
-					<button type="button" class="btn btn-danger" data-id="'+name+'" onClick="removePillName(this);">X</button>\
+		if(isNewName(caller)) {
+			var name = $(caller).val();
+			$(caller).before('<input name="'+$(caller).attr("id")+'[pillNames][]" type="hidden" value="'+name+'">');
+			$(caller).before('\
+				<div>\
+					<div class="btn-group">\
+						<button type="button" class="btn btn-default pillNameButton">'+name+'</button>\
+						<button type="button" class="btn btn-danger" data-id="'+name+'" onClick="removePillName(this);">X</button>\
+					</div>\
+					<br/><br/>\
 				</div>\
-				<br/><br/>\
-			</div>\
-		');
-		$(caller).prev().show(); //originally hidden by CSS
-		$("tbody *").focus(function() {
-			lastFocus = $(this);
-		});
-		$(caller).val("");
+			');
+			$(caller).prev().show(); //originally hidden by CSS
+			$(caller).val("");
+		}
 	}
 	
 	/**
@@ -84,9 +83,30 @@ $(document).ready(function(){
 	 * @param {String} name The new entered pill name
 	*/
 	function customNameEntered(name){
-		if(possibleNames.indexOf(name) == -1) //is a new name
+		if(possibleNames.indexOf(name) == -1) //is a new name for suggestions
 			possibleNames.push(name);
 		pillField.autocomplete("close"); // close suggestions menu
+	}
+	
+	/**
+	 * Checks if the new entered name is allready selected/entered for specific cell.
+	 * This is used to avoid duplicate pill names entered for a cell.
+	 * @param {Element} caller Input element field where pill was entered
+	 * @return {boolean} False if the new name is duplicate, True otherwise
+	 */
+	function isNewName(caller){
+		var result = true
+		$(caller).parents("td").find(".pillNameButton").each(function(index) {
+			console.log("ASDAS");
+			console.log($(this).text());
+			console.log($(caller).val());
+			console.log($(this).text() == $(caller).val());
+			if(($(this).text()) == ($(caller).val())) {
+				result = false;
+				return false; //this only breaks each(), but doesn't return value from isNewName()
+			}
+		});
+		return result;
 	}
 	
 	/**
