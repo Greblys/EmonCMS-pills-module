@@ -48,3 +48,5 @@ A module for EmonCMS which displays a form where you can set up a schedule for y
 * Form includes autocomplete functionality which helps user to enter pill name. This is chosen instead of having huge list where the user would need to scroll a lot to find particular pill.
 * Button for copying settings from one cell to all others. This way user doesn't need to fill in repetitive data for all cells 28 times.
 * Button for copying settings from one day to all others.
+* Storing all the schedule data in the database
+* Sending the schedule to the broker after each schedule update.
