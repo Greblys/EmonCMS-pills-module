@@ -6,12 +6,20 @@
  */
 
 /**
+ * Variable for keeping which element was focused the last.
+ * When "copy from one to all" button pressed it copies all the 
+ * values from the cell which was last focused.
+ */
+var lastFocus = null;
+
+/**
  * This is called when red X button next to each pill name is pressed.
  * All it does it just removes the hidden input element for that pill name,
  * removes the pill name button itself and removes X button associated with that pill name.
  * @param {element} caller X button which was pressed as an element
  */
 function removePillName(caller){
+	lastFocus = $(caller).parents("td"); //look issue #13
 	$('input[value="'+$(caller).attr("data-id")+'"]').remove();
 	$(caller).parent().parent().remove();
 }
@@ -23,14 +31,7 @@ $(document).ready(function(){
 	/**
 	 * Pill names suggestions array for autocomplete
 	 */
-	var possibleNames = []; 
-	
-	/**
-	 * Variable for keeping which element was focused the last.
-	 * When "copy from one to all" button pressed it copies all the 
-	 * values from the cell which was last focused.
-	 */
-	var lastFocus = null; 
+	var possibleNames = [];  
 	
 	var pillField = $(".pillNameInput");
 	
@@ -61,13 +62,16 @@ $(document).ready(function(){
 		$(caller).before('\
 			<div>\
 				<div class="btn-group">\
-					<button type="button" class="btn btn-default">'+name+'</button>\
+					<button type="button" class="btn btn-default pillNameButton">'+name+'</button>\
 					<button type="button" class="btn btn-danger" data-id="'+name+'" onClick="removePillName(this);">X</button>\
 				</div>\
 				<br/><br/>\
 			</div>\
 		');
 		$(caller).prev().show(); //originally hidden by CSS
+		$("tbody *").focus(function() {
+			lastFocus = $(this);
+		});
 		$(caller).val("");
 	}
 	
@@ -135,9 +139,9 @@ $(document).ready(function(){
 	/**
 	 * Triggered on each focus event in table's body
 	 * tracking last focused element. "Copy from one to all"
-	 * button might need it.
+	 * button might need last focused item.
 	 */
-	$("tbody *").focus(function() {
+	$("tbody *").not(".btn-danger").focus(function() {
 		lastFocus = $(this);
 	});
 	
@@ -148,23 +152,22 @@ $(document).ready(function(){
 	 */
 	$("#copyFromOneToAll").click(function() {
 		if(lastFocus){
-			var td = lastFocus.parents("td");
+			//It is TD allready only when red button clicked
+			if(lastFocus.prop("tagName") != "TD")
+				lastFocus = lastFocus.parents("td");
 			//time
-			originValue = td.find('input[type="time"]').val();
-			console.log(originValue);
+			originValue = lastFocus.find('input[type="time"]').val();
 			$('tbody input[type="time"]').val(originValue);
 			//importance
-			originValue = td.find('select').val();
+			originValue = lastFocus.find('select').val();
 			$('tbody select').val(originValue);
 			//pillNames
-			pillNames = td.find(".pillNameButton");
+			pillNames = lastFocus.find(".pillNameButton");
 			//remove all existing names including in selected cell
 			$(".pillNameButton").parent().parent().remove();
 			$('input[type="hidden"]').remove();
-			console.log(pillNames);
 			pillNames.each(function() {
 				originValue = $(this).text();
-				console.log(this);
 				$('tbody input[type="text"]').each(function() {
 					$(this).val(originValue);
 					pillNameEntered(this);
