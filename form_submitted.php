@@ -1,6 +1,13 @@
 <?php
 defined('EMONCMS_EXEC') or die('Restricted access');
 
+function sanitize($value){
+	$value = trim($value);
+	$value = stripslashes($value);
+	$value = htmlspecialchars($value);
+	return $value;
+}
+
 global $mysqli;
 $userId = 1; //Currently using only one user, but in the future there should be more. Database schema is ready for multiple users.
 $cellsTableExists = $mysqli->query("SHOW TABLES LIKE 'cells'")->num_rows > 0;
@@ -35,13 +42,40 @@ if(!$namesInCellsTableExists){
 $daySecs = 60 * 60 * 24;
 $weekBase = $_POST["weekNumber"];
 $mqttData = [];
+$isError = false;
 for($index = 0; $index < 28; $index++){
 	$time = 0;
 	$pillNames = [];
 	$importance = 0;
-	foreach($_POST[$index] as $key => $value) $$key = $value;
-	list($hours, $mins) = explode(":", $time);
-	$deadline = $mins * 60 + $hours * 3600 + floor($index / 7) * $daySecs + $weekBase;
+	foreach($_POST[$index] as $key => $value) {
+		if($key != "pillNames") {
+			$key = sanitize($key);
+			$value = sanitize($value);
+		}
+		$$key = $value;
+	}
+	
+	//validating deadline
+	if(preg_match("~(([01]?[0-9]|2[0-3]):[0-5][0-9])?~", $time, $matches) == 1){
+		$time = $matches[0] ? $matches[0] : "NULL"; //NULL if no deadline entered. In that case Cell is empty.
+	} else {
+		$isError = true;
+		break;
+	}
+	
+	if($time != "NULL") { //if cell is not empty
+		list($hours, $mins) = explode(":", $time);
+		$deadline = $mins * 60 + $hours * 3600 + floor($index / 7) * $daySecs + $weekBase;
+	} else {
+		$deadline = $time;
+	}
+	
+	//validating importance
+	if($importance < 0 || $importance > 3){
+		$isError = true;
+		break;
+	}
+	
 	$mqtt[$index]["time"] = $deadline;
 	$mqtt[$index]["importance"] = $importance;
 	$mqtt[$index]["names"] = [];
@@ -56,37 +90,25 @@ for($index = 0; $index < 28; $index++){
 	if(count($pillNames) > 0)
 		$mysqli->query("DELETE FROM Names_in_cells WHERE user_id='$userId' AND cell_index='$index'");
 	foreach($pillNames as $name) {
-		array_push($mqtt[$index]["names"], $name);
-		$rows = $mysqli->query("SELECT * FROM Pill_names WHERE name='$name'");
-		$rows2 = $mysqli->query("SELECT * FROM Names_in_cells WHERE user_id='$userId' AND cell_index='$index' AND name='$name'");
-		if(!$rows || $rows->num_rows == 0) 
-			$mysqli->query("INSERT INTO Pill_names VALUES('$name')");
-		if(!$rows2 || $rows2->num_rows == 0)
-			$mysqli->query("INSERT INTO Names_in_cells VALUES('$userId', '$index', '$name')");
+		$name = sanitize($name);
+		if(!empty($name)) { //validating pill name
+			array_push($mqtt[$index]["names"], $name);
+			$rows = $mysqli->query("SELECT * FROM Pill_names WHERE name='$name'");
+			$rows2 = $mysqli->query("SELECT * FROM Names_in_cells WHERE user_id='$userId' AND cell_index='$index' AND name='$name'");
+			if(!$rows || $rows->num_rows == 0) 
+				$mysqli->query("INSERT INTO Pill_names VALUES('$name')");
+			if(!$rows2 || $rows2->num_rows == 0)
+				$mysqli->query("INSERT INTO Names_in_cells VALUES('$userId', '$index', '$name')");
+		}
 	}
 }
 
-print_r("<pre>".json_encode((object) $mqtt, JSON_PRETTY_PRINT)."</pre>");
-
-/*
-foreach($_POST as $key => $value) {
-	
-	if($key < 28 && $key >= 0 && preg_match("~(([01]?[0-9]|2[0-3]):[0-5][0-9])?~", $value, $matches) == 1): 
-		$value = $matches[0] ? "'".$matches[0]."'" : "NULL";
-		$mysqli->query("UPDATE Cells
-					   SET deadline=$value
-					   WHERE id=$key");
-
-	else: 
-	?>
-	<div class="alert alert-danger"><h4 class="alert-heading">Something went wrong. Try again.</h4></div>
-	<?php  
-	break;
-	endif;
-}
-if ($key == 27): 
+if($isError):
 ?>
-	<div class="alert alert-success">Schedule is updated now.</div>
-<?php 
-endif; 
-*/
+<div class="alert alert-danger"><h4 class="alert-heading">Something went wrong. Try again.</h4></div>
+<?php else: ?>
+<div class="alert alert-success">Schedule is updated now.</div>
+<?php endif; ?>
+
+<?php
+print_r("<pre>".json_encode((object) $mqtt, JSON_PRETTY_PRINT)."</pre>");
