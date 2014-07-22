@@ -117,6 +117,7 @@ $(document).ready(function(){
 	 * Triggered when selection is made using autocomplete
 	 */
 	pillField.on( "autocompleteselect", function( event, ui ) {
+		$(this).val(ui.item.value);
 		pillNameEntered(this);
 		return false;
 	});

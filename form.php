@@ -5,7 +5,6 @@ include_once "model.php";
 global $mysqli, $path;
 $userId = 1; //Currently using only one user, but in the future there should be more. Database schema is ready for multiple users.
 $data = get_all_data();
-
 ?>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
@@ -48,9 +47,9 @@ $input_index = 0;
 	<th><?php echo $day; ?></th>
 	<?php 
 	for($i = 0; $i < 4; $i++): 
-	$result = $mysqli->query("SELECT deadline FROM Cells WHERE cell_index='$input_index'"); 
-	$row = $result ? $result->fetch_object() : false;
-	$timeValue = $row ? date("H:i", $row->deadline) : $default_times[$i];
+		$timeValue = $data ? date("H:i", $data[$input_index]["deadline"]) : $default_times[$i];
+		$importance = $data ? $data[$input_index]["importance"] : 0;
+		$names = $data ? $data[$input_index]["names"] : Array();
 	?>
 	<td>
 			<div>
@@ -58,10 +57,10 @@ $input_index = 0;
 			<select class="form-control" name="<?php echo $input_index."[importance]"; ?>"><br>
 				<?php $importances = ["Not Important", "Important", "Very Important"]; ?>
 				<?php for($j = 0; $j < 3; $j++): ?>
-					<option <?php if($j == $data[$input_index]["importance"]) echo "selected "; ?>value="<?php echo $j; ?>"><?php echo $importances[$j]; ?></option>
+					<option <?php if($j == $importance) echo "selected "; ?>value="<?php echo $j; ?>"><?php echo $importances[$j]; ?></option>
 				<?php endfor; ?>
 			</select>
-			<?php foreach($data[$input_index]["names"] as $name): ?>
+			<?php foreach($names as $name): ?>
 				<div>
 					<div class="btn-group">
 						<button type="button" class="btn btn-default pillNameButton"><?php echo $name; ?></button>

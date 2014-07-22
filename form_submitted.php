@@ -35,15 +35,13 @@ if(!$namesInCellsTableExists){
 $daySecs = 60 * 60 * 24;
 $weekBase = $_POST["weekNumber"];
 $mqttData = [];
-echo date("r", $weekBase)."<br>";
 for($index = 0; $index < 28; $index++){
 	$time = 0;
 	$pillNames = [];
 	$importance = 0;
 	foreach($_POST[$index] as $key => $value) $$key = $value;
 	list($hours, $mins) = explode(":", $time);
-	$deadline = $mins * 60 + $hours * 3600 + ($index / 4) * $daySecs + $weekBase;
-	echo date("r", $deadline)."<br>";
+	$deadline = $mins * 60 + $hours * 3600 + floor($index / 7) * $daySecs + $weekBase;
 	$mqtt[$index]["time"] = $deadline;
 	$mqtt[$index]["importance"] = $importance;
 	$mqtt[$index]["names"] = [];
@@ -68,7 +66,8 @@ for($index = 0; $index < 28; $index++){
 	}
 }
 
-echo json_encode((object) $mqtt);
+print_r("<pre>".json_encode((object) $mqtt, JSON_PRETTY_PRINT)."</pre>");
+
 /*
 foreach($_POST as $key => $value) {
 	
