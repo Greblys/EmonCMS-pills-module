@@ -78,7 +78,7 @@ for($index = 0; $index < 28; $index++){
 	
 	$mqtt[$index]["time"] = $deadline;
 	$mqtt[$index]["importance"] = $importance;
-	$mqtt[$index]["names"] = Array();
+	$mqtt[$index]["pills"] = Array();
 	$rows = $mysqli->query("SELECT * FROM Cells WHERE user_id='$userId' AND cell_index='$index'");
 	if($rows && $rows->num_rows > 0)
 		$mysqli->query("UPDATE Cells
@@ -92,7 +92,7 @@ for($index = 0; $index < 28; $index++){
 	foreach($pillNames as $name) {
 		$name = sanitize($name);
 		if(!empty($name)) { //validating pill name
-			array_push($mqtt[$index]["names"], $name);
+			array_push($mqtt[$index]["pills"], $name);
 			$rows = $mysqli->query("SELECT * FROM Pill_names WHERE name='$name'");
 			$rows2 = $mysqli->query("SELECT * FROM Names_in_cells WHERE user_id='$userId' AND cell_index='$index' AND name='$name'");
 			if(!$rows || $rows->num_rows == 0) 
@@ -111,5 +111,6 @@ if($isError):
 <?php endif; ?>
 
 <?php
-$model->sendScheduleToBroker(json_encode((object) $mqtt));
-print_r("<pre>".json_encode((object) $mqtt)."</pre>");
+$json = json_encode((object) $mqtt, JSON_NUMERIC_CHECK);
+$model->sendScheduleToBroker($json);
+print_r("<pre>$json</pre>");
