@@ -34,8 +34,7 @@ class PillsModel {
 	public function getPillNames(){
 		$names = Array();
 		if($result = $this->mysqli->query("SELECT name FROM Pill_names")){
-			$rows = $result->fetch_all(MYSQLI_ASSOC);
-			foreach($rows as $row) 
+			while($row = $result->fetch_array())
 				array_push($names, $row['name']);
 		}
 		return $names;
