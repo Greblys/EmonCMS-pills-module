@@ -111,4 +111,5 @@ if($isError):
 <?php endif; ?>
 
 <?php
-print_r("<pre>".json_encode((object) $mqtt, JSON_PRETTY_PRINT)."</pre>");
+$model->sendScheduleToBroker(json_encode((object) $mqtt));
+print_r("<pre>".json_encode((object) $mqtt)."</pre>");

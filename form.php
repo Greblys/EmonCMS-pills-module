@@ -2,9 +2,7 @@
 defined('EMONCMS_EXEC') or die('Restricted access');
 include_once "model.php";
 
-global $mysqli, $path;
-$userId = 1; //Currently using only one user, but in the future there should be more. Database schema is ready for multiple users.
-$data = get_all_data();
+global $path;
 ?>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
