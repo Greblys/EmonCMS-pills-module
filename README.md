@@ -20,7 +20,7 @@ This module uses [PHP MQTT client](https://github.com/mgdm/Mosquitto-PHP) which 
 ###[PHP MQTT Client installation](https://github.com/mgdm/Mosquitto-PHP#installation)
 * Run `pecl install Mosquitto-alpha`
 * Probably you need to add `extension=mosquitto.so` line to php.ini file.
-* EmonCMS pill modules uses SSL in MQTT client so you nee to run `c_rehash <path to capath>`. [More info](http://mosquitto.org/man/mosquitto_pub-1.html).
+* EmonCMS pill modules uses SSL in MQTT client so you need to run `c_rehash <path to capath>`. [More info](http://mosquitto.org/man/mosquitto_pub-1.html).
 * Now you are ready to install EmonCMS module
 
 
