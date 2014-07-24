@@ -8,15 +8,15 @@ function sanitize($value){
 	return $value;
 }
 
-global $mysqli;
-$userId = 1; //Currently using only one user, but in the future there should be more. Database schema is ready for multiple users.
+global $mysqli, $session;
+$userId = $session['userid'];
 $cellsTableExists = $mysqli->query("SHOW TABLES LIKE 'cells'")->num_rows > 0;
 $namesTableExists = $mysqli->query("SHOW TABLES LIKE 'pills'")->num_rows > 0;
 $namesInCellsTableExists  = $mysqli->query("SHOW TABLES LIKE 'pills'")->num_rows > 0;
 
 if(!$cellsTableExists){
 	$mysqli->query("CREATE TABLE Cells (
-				   user_id INT,
+				   user_id INT, //#19
 				   deadline INT,
 				   importance TINYINT,
 				   cell_index TINYINT,
