@@ -28,7 +28,7 @@ function pills_controller()
 	
 	//Used by JQuery in form to provide suggestions when user is entering pills names in field.
 	if($route->action == "pillNames" && $route->format == 'json') {
-		$names = [];
+		$names = Array();
 		if($result = $mysqli->query("SELECT name FROM Pill_names")){
 			$rows = $result->fetch_all(MYSQLI_ASSOC);
 			foreach($rows as $row) 
@@ -36,5 +36,10 @@ function pills_controller()
 		}
 		$result = $names;
 	}
+	
+	if($route->action == "publish") {
+		$result = view("Modules/pills/publish.php", array());
+	}
+	
     return array('content'=>$result);
 }

@@ -41,11 +41,11 @@ if(!$namesInCellsTableExists){
 
 $daySecs = 60 * 60 * 24;
 $weekBase = $_POST["weekNumber"];
-$mqttData = [];
+$mqttData = Array();
 $isError = false;
 for($index = 0; $index < 28; $index++){
 	$time = 0;
-	$pillNames = [];
+	$pillNames = Array();
 	$importance = 0;
 	foreach($_POST[$index] as $key => $value) {
 		if($key != "pillNames") {
@@ -78,7 +78,7 @@ for($index = 0; $index < 28; $index++){
 	
 	$mqtt[$index]["time"] = $deadline;
 	$mqtt[$index]["importance"] = $importance;
-	$mqtt[$index]["names"] = [];
+	$mqtt[$index]["names"] = Array();
 	$rows = $mysqli->query("SELECT * FROM Cells WHERE user_id='$userId' AND cell_index='$index'");
 	if($rows && $rows->num_rows > 0)
 		$mysqli->query("UPDATE Cells

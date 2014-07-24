@@ -55,7 +55,7 @@ $input_index = 0;
 			<div>
 			<input type="time" class="form-control" value="<?php echo $timeValue; ?>" name="<?php echo $input_index."[time]"; ?>"/><br>
 			<select class="form-control" name="<?php echo $input_index."[importance]"; ?>"><br>
-				<?php $importances = ["Not Important", "Important", "Very Important"]; ?>
+				<?php $importances = Array("Not Important", "Important", "Very Important"); ?>
 				<?php for($j = 0; $j < 3; $j++): ?>
 					<option <?php if($j == $importance) echo "selected "; ?>value="<?php echo $j; ?>"><?php echo $importances[$j]; ?></option>
 				<?php endfor; ?>
