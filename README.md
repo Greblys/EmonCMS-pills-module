@@ -7,7 +7,23 @@ A module for EmonCMS which displays a form where you can set up a schedule for y
 * EmonCMS
 
 ##Installation
+This module uses [PHP MQTT client](https://github.com/mgdm/Mosquitto-PHP) which uses Mosquitto library. You need to install first the Mosquitto library and then PHP MQTT client.
 
+###[Mosquitto library installation](http://mosquitto.org/download/)
+* `sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa`
+* `sudo apt-get update`
+* If you don't have `apt-add-repository` do `sudo apt-get install python-software-properties`
+* You need to have at least v1.3 so libmosquitto0 is not enough for you. Because of the [bug](https://bugs.launchpad.net/mosquitto/+bug/1348159) you need to install libmosquitto-dev instead of libmosquitto1-dev. So run: `sudo apt-get install libmosquitto-dev`
+* Now you are ready to install PHP MQTT client
+
+
+###[PHP MQTT Client installation](https://github.com/mgdm/Mosquitto-PHP#installation)
+* Run `pecl install Mosquitto-alpha`
+* Probably you need to add `extension=mosquitto.so` line to php.ini file.
+* Now you are ready to install EmonCMS module
+
+
+###EmonCMS pills module installation
 * Go to: path to EmonCMS installation/Modules
 * Create new folder called "pills"
 * Copy all the files from this repository into "pills" folder
