@@ -47,7 +47,7 @@ class PillsModel {
 		for($i = 0; $i < 4; $i++) {
 			$this->broker->loop();
 			if(!$sent) {
-				$this->broker->publish("pills/schedule", $json, 1, 1);
+				$this->broker->publish("home/pill/schedule", $json, 1, 1);
 				$sent = true;
 			}
 			sleep(1);
@@ -62,7 +62,7 @@ class SecureMqtt extends Mosquitto\Client{
 		parent::__construct();
 		parent::setCredentials($username, $pass);
 		parent::setTlsCertificates(".");
-		parent::setTlsOptions(0, "tlsv1.1", NULL);
-		parent::connect($host, 8883);
+		parent::setTlsOptions(Mosquitto\Client::SSL_VERIFY_NONE, "tlsv1", NULL);
+		parent::connect($host, 8884);
 	}
 }
