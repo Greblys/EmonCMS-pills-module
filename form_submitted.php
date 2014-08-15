@@ -65,7 +65,7 @@ for($index = 0; $index < 28; $index++){
 	
 	if($time != "NULL") { //if cell is not empty
 		list($hours, $mins) = explode(":", $time);
-		$deadline = $mins * 60 + $hours * 3600 + floor($index / 7) * $daySecs + $weekBase;
+		$deadline = $mins * 60 + $hours * 3600 + floor($index / 4) * $daySecs + $weekBase;
 	} else {
 		$deadline = $time;
 	}
@@ -111,6 +111,11 @@ if($isError):
 <?php endif; ?>
 
 <?php
+foreach($mqtt as $index => $value){
+	$date = date("r", $value["time"]);
+	echo "$index: $date</br>";
+}
 $json = json_encode((object) $mqtt, JSON_NUMERIC_CHECK);
+
 $model->sendScheduleToBroker($json);
 print_r("<pre>$json</pre>");

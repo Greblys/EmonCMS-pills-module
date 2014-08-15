@@ -81,9 +81,9 @@ class SecureMqtt extends Mosquitto\Client{
 	
 	public function __construct($host, $username, $pass){
 		parent::__construct();
-		//parent::setCredentials($username, $pass);
-		//parent::setTlsCertificates(".");
-		//parent::setTlsOptions(Mosquitto\Client::SSL_VERIFY_NONE, "tlsv1", NULL);
-		parent::connect($host/*, 8883*/);
+		parent::setCredentials($username, $pass);
+		parent::setTlsCertificates(".");
+		parent::setTlsOptions(Mosquitto\Client::SSL_VERIFY_NONE, "tlsv1", NULL);
+		parent::connect($host, 8883);
 	}
 }

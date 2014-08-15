@@ -7,8 +7,8 @@ function pills_controller()
 {
     global $mysqli,$session, $route, $data, $redis, $timestore_adminkey;
 	require "model.php";
-	//$model = new PillsModel($mysqli, $session['userid'], "gateway.cairnsolutions.com", "grebll", "St4pl3r", $redis, $timestore_adminkey);
-	$model = new PillsModel($mysqli, $session['userid'], "test.mosquitto.org", NULL, NULL, $redis, $timestore_adminkey);
+	$model = new PillsModel($mysqli, $session['userid'], "gateway.cairnsolutions.com", "grebll", "St4pl3r", $redis, $timestore_adminkey);
+	//$model = new PillsModel($mysqli, $session['userid'], "test.mosquitto.org", NULL, NULL, $redis, $timestore_adminkey);
     $result = false;
 
     if (!$session['read']) return array('content'=>false);
