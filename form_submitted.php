@@ -111,10 +111,6 @@ if($isError):
 <?php endif; ?>
 
 <?php
-foreach($mqtt as $index => $value){
-	$date = date("r", $value["time"]);
-	echo "$index: $date</br>";
-}
 $json = json_encode((object) $mqtt, JSON_NUMERIC_CHECK);
 
 $model->sendScheduleToBroker($json);
