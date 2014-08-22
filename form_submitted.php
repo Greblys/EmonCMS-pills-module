@@ -10,23 +10,26 @@ function sanitize($value){
 
 global $mysqli, $session;
 $userId = $session['userid'];
-$cellsTableExists = $mysqli->query("SHOW TABLES LIKE 'cells'")->num_rows > 0;
-$namesTableExists = $mysqli->query("SHOW TABLES LIKE 'pills'")->num_rows > 0;
-$namesInCellsTableExists  = $mysqli->query("SHOW TABLES LIKE 'pills'")->num_rows > 0;
+$cellsTableExists = $mysqli->query("SHOW TABLES LIKE 'Cells'")->num_rows > 0;
+$namesTableExists = $mysqli->query("SHOW TABLES LIKE 'Pill_names'")->num_rows > 0;
+$namesInCellsTableExists  = $mysqli->query("SHOW TABLES LIKE 'Names_in_cells'")->num_rows > 0;
 
 if(!$cellsTableExists){
 	$mysqli->query("CREATE TABLE Cells (
-				   user_id INT, //#19
+				   user_id INT,
 				   deadline INT,
 				   importance TINYINT,
 				   cell_index TINYINT,
+				   snoozes TINYINT,
 				   PRIMARY KEY (user_id, cell_index)
-				  )");		
+				  )");	
+	if($mysqli->error) var_dump($mysqli->error);
 }
 if(!$namesTableExists){
 	$mysqli->query("CREATE TABLE Pill_names (
 				   name VARCHAR(50) PRIMARY KEY NOT NULL
 				  )");
+	if($mysqli->error) var_dump($mysqli->error);
 }
 if(!$namesInCellsTableExists){
 	$mysqli->query("CREATE TABLE Names_in_cells (
@@ -37,6 +40,7 @@ if(!$namesInCellsTableExists){
 					FOREIGN KEY (user_id, cell_index) REFERENCES Cells(user_id, cell_index),
 					FOREIGN KEY (name) REFERENCES Pill_names(name)
 					)");
+	if($mysqli->error) var_dump($mysqli->error);
 }
 
 $daySecs = 60 * 60 * 24;
@@ -85,7 +89,7 @@ for($index = 0; $index < 28; $index++){
 						SET deadline='$deadline', importance='$importance'
 						WHERE user_id='$userId' AND cell_index='$index'");
 	else
-		$mysqli->query("INSERT INTO Cells VALUES ('$userId', '$deadline', '$importance', '$index')");
+		$mysqli->query("INSERT INTO Cells VALUES ('$userId', '$deadline', '$importance', '$index', 0)");
 	
 	if(count($pillNames) > 0)
 		$mysqli->query("DELETE FROM Names_in_cells WHERE user_id='$userId' AND cell_index='$index'");

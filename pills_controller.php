@@ -10,7 +10,7 @@ function pills_controller()
 	$model = new PillsModel($mysqli, $session['userid'], "gateway.cairnsolutions.com", "grebll", "St4pl3r", $redis, $timestore_adminkey);
 	//$model = new PillsModel($mysqli, $session['userid'], "test.mosquitto.org", NULL, NULL, $redis, $timestore_adminkey);
     $result = false;
-
+	
     if (!$session['read']) return array('content'=>false);
 	
 	//form
@@ -30,6 +30,10 @@ function pills_controller()
 	//Used by JQuery in form to provide suggestions when user is entering pills names in field.
 	if($route->action == "pillNames" && $route->format == 'json') {
 		$result = $model->getPillNames();
+	}
+	
+	if($route->action == "updateCell" && $route->format == 'json') {
+		$result = $model->updateCell(get('cellIndex'), get('snoozes'), get('time'), get('importance'), get('pills'));
 	}
 	
 	if($route->action == "publish") {

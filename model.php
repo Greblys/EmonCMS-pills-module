@@ -20,9 +20,10 @@ class PillsModel {
 		$userId = $this->user;
 		if($result = $this->mysqli->query("SELECT * FROM Cells WHERE user_id='$userId'")){
 			$data = Array();
-			for (; $row = $result->fetch_array();){
+			while($row = $result->fetch_array()){
 				$data[$row["cell_index"]]["time"] = $row["deadline"];
 				$data[$row["cell_index"]]["importance"] = $row["importance"];
+				$data[$row["cell_index"]]["snoozes"] = $row["snoozes"];
 				$data[$row["cell_index"]]["pills"] = Array();
 			}
 				
@@ -72,6 +73,50 @@ class PillsModel {
 				$sent = true;
 			}
 			sleep(1);
+		}
+	}
+	
+	public function updateCell($cellId, $snoozes = null, $deadline = null, $importance = null, $pillNames = null){
+		$userid = $this->user;
+		$result = $this->mysqli->query("SELECT * FROM Cells WHERE user_id=$userid AND cell_index=$cellId");
+		if($this->mysqli->error) var_dump($this->mysqli->error);
+		if($result->num_rows == 0)
+			return "Cell does not exist";
+		else {
+			$query = "UPDATE Cells SET ";
+			if($snoozes !== null) {
+				$query .= "snoozes=$snoozes";
+				if($deadline !== null || $importance !== null) 
+					$query .= ",";
+			}
+			if($deadline !== null) {
+				$query .= " deadline=$deadline";
+				if($importance !== null) 
+					$query .= ",";
+			}
+			if($importance !== null) $query .= " importance=$importance";
+			$query .= " WHERE user_id=$userid AND cell_index=$cellId";
+			$this->mysqli->query($query);
+			if($this->mysqli->error) var_dump($this->mysqli->error);
+			if($pillNames) {
+				$this->mysqli->query("DELETE FROM Names_in_cells WHERE user_id='$userid' AND cell_index='$cellId'");
+				if($this->mysqli->error) var_dump($this->mysqli->error);
+				foreach($pillNames as $name){
+					$rows = $this->mysqli->query("SELECT * FROM Pill_names WHERE name='$name'");
+					if($this->mysqli->error) var_dump($this->mysqli->error);
+					$rows2 = $this->mysqli->query("SELECT * FROM Names_in_cells WHERE user_id='$userid' AND cell_index='$cellId' AND name='$name'");
+					if($this->mysqli->error) var_dump($this->mysqli->error);
+					if(!$rows || $rows->num_rows == 0) {
+						$this->mysqli->query("INSERT INTO Pill_names VALUES('$name')");
+						if($this->mysqli->error) var_dump($this->mysqli->error);
+					}
+					if(!$rows2 || $rows2->num_rows == 0) {
+						$this->mysqli->query("INSERT INTO Names_in_cells VALUES('$userid', '$cellId', '$name')");
+						if($this->mysqli->error) var_dump($this->mysqli->error);
+					}
+				}
+			}
+			return "Update done";
 		}
 	}
 
