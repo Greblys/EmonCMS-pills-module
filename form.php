@@ -45,9 +45,9 @@ $input_index = 0;
 	<th><?php echo $day; ?></th>
 	<?php 
 	for($i = 0; $i < 4; $i++): 
-		$timeValue = $data ? date("H:i", $data[$input_index]["deadline"]) : $default_times[$i];
+		$timeValue = $data ? date("H:i", $data[$input_index]["time"]) : $default_times[$i];
 		$importance = $data ? $data[$input_index]["importance"] : 0;
-		$names = $data ? $data[$input_index]["names"] : Array();
+		$names = $data ? $data[$input_index]["pills"] : Array();
 	?>
 	<td>
 			<div>

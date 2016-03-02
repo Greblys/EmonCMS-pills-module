@@ -5,11 +5,20 @@ defined('EMONCMS_EXEC') or die('Restricted access');
 
 function pills_controller()
 {
-    global $mysqli,$session, $route, $data;
+    global $mysqli,$session, $route, $data, $redis, $timestore_adminkey;
 	require "model.php";
-	$model = new PillsModel($mysqli, $session['userid'], "gateway.cairnsolutions.com", "grebll", "St4pl3r");
+	$model = new PillsModel($mysqli, $session['userid'], "gateway.cairnsolutions.com", "grebll", "St4pl3r", $redis, $timestore_adminkey);
+	//$model = new PillsModel($mysqli, $session['userid'], "test.mosquitto.org", NULL, NULL, $redis, $timestore_adminkey);
     $result = false;
-
+	/*
+	$mysqli->query("DROP TABLE Names_in_cells");
+	var_dump($mysqli->error);
+	$mysqli->query("DROP TABLE Pill_names");
+	var_dump($mysqli->error);
+	$mysqli->query("DROP TABLE Cells");
+	var_dump($mysqli->error);
+	*/
+	
     if (!$session['read']) return array('content'=>false);
 	
 	//form
@@ -29,6 +38,10 @@ function pills_controller()
 	//Used by JQuery in form to provide suggestions when user is entering pills names in field.
 	if($route->action == "pillNames" && $route->format == 'json') {
 		$result = $model->getPillNames();
+	}
+	
+	if($route->action == "updateCell" && $route->format == 'json') {
+		$result = $model->updateCell(get('cellIndex'), get('snoozes'), get('time'), get('importance'), get('pills'));
 	}
 	
 	if($route->action == "publish") {
