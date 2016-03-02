@@ -10,14 +10,6 @@ function pills_controller()
 	$model = new PillsModel($mysqli, $session['userid'], "gateway.cairnsolutions.com", "grebll", "St4pl3r", $redis, $timestore_adminkey);
 	//$model = new PillsModel($mysqli, $session['userid'], "test.mosquitto.org", NULL, NULL, $redis, $timestore_adminkey);
     $result = false;
-	/*
-	$mysqli->query("DROP TABLE Names_in_cells");
-	var_dump($mysqli->error);
-	$mysqli->query("DROP TABLE Pill_names");
-	var_dump($mysqli->error);
-	$mysqli->query("DROP TABLE Cells");
-	var_dump($mysqli->error);
-	*/
 	
     if (!$session['read']) return array('content'=>false);
 	

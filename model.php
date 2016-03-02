@@ -127,10 +127,8 @@ class SecureMqtt extends Mosquitto\Client{
 	public function __construct($host, $username, $pass){
 		parent::__construct();
 		parent::setCredentials($username, $pass);
-		parent::setTlsCertificates('/var/www/emoncms/Modules/pills/ca-cert.crt');
-		parent::setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, 'tlsv1', NULL);
-		//parent::setTlsCertificates(".");
-		//parent::setTlsOptions(Mosquitto\Client::SSL_VERIFY_NONE, "tlsv1", NULL);
+		parent::setTlsCertificates(".");
+		parent::setTlsOptions(Mosquitto\Client::SSL_VERIFY_NONE, "tlsv1", NULL);
 		parent::connect($host, 8883);
 	}
 }
